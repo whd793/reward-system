@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Query, Patch, Logger, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  Patch,
+  Logger,
+  // UseGuards,
+  Request,
+} from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { EventsService } from './events.service';

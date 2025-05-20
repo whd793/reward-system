@@ -39,7 +39,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
    *
    * @param err 오류 객체
    */
-  handleRequest(err, user) {
+  handleRequest(err: any, user: any) {
     if (err || !user) {
       throw err || new UnauthorizedException('인증에 실패했습니다.');
     }

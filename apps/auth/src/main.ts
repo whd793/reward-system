@@ -1,12 +1,17 @@
+// apps/auth/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from '@app/common'; // Your custom filter
+import { HttpExceptionFilter } from '@app/common';
 
+/**
+ * 인증 서비스 메인 함수
+ */
 async function bootstrap() {
-  const logger = new Logger('Auth Service');
+  const logger = new Logger('Auth');
 
+  // Create only a microservice
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.TCP,
     options: {
@@ -15,6 +20,7 @@ async function bootstrap() {
     },
   });
 
+  // Global pipes and filters
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -28,32 +34,17 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // Start the microservice
   await app.listen();
-  logger.log('🎯 Event microservice is running on port 3001');
+
+  logger.log('🎯 Auth microservice is running on port 3001');
 }
-bootstrap();
 
-// import { NestFactory } from '@nestjs/core';
-// import { Transport } from '@nestjs/microservices';
-// import { Logger } from '@nestjs/common';
-// import { AppModule } from './app.module';
-
-// async function bootstrap() {
-//   const logger = new Logger('Auth Service');
-
-//   // Create a microservice only
-//   const app = await NestFactory.createMicroservice(AppModule, {
-//     transport: Transport.TCP,
-//     options: {
-//       host: '0.0.0.0',
-//       port: 3001,
-//     },
-//   });
-
-//   await app.listen();
-//   logger.log('Auth microservice is running on port 3001');
-// }
-// bootstrap();
+bootstrap().catch(err => {
+  const logger = new Logger('Auth');
+  logger.error(`Failed to start auth service: ${err.message}`, err.stack);
+  process.exit(1);
+});
 
 // import { NestFactory } from '@nestjs/core';
 // import { Transport, MicroserviceOptions } from '@nestjs/microservices';
@@ -62,15 +53,12 @@ bootstrap();
 // import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { AppModule } from './app.module';
 // import helmet from 'helmet';
-// // import compression from 'compression';
 // import * as compression from 'compression';
-
 // import { HttpExceptionFilter } from '@app/common';
 
 // /**
 //  * 인증 서비스 메인 함수
 //  */
-
 // async function bootstrap() {
 //   const logger = new Logger('Auth');
 
@@ -134,25 +122,3 @@ bootstrap();
 //   logger.error(`Failed to start auth service: ${err.message}`, err.stack);
 //   process.exit(1);
 // });
-
-// import { NestFactory } from '@nestjs/core';
-// import { Transport } from '@nestjs/microservices';
-// import { Logger } from '@nestjs/common';
-// import { AppModule } from './app.module';
-
-// async function bootstrap() {
-//   const logger = new Logger('Auth Service');
-
-//   // Create a microservice only
-//   const app = await NestFactory.createMicroservice(AppModule, {
-//     transport: Transport.TCP,
-//     options: {
-//       host: '0.0.0.0',
-//       port: 3001,
-//     },
-//   });
-
-//   await app.listen();
-//   logger.log('Auth microservice is running on port 3001');
-// }
-// bootstrap();

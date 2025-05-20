@@ -1,13 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Transport } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from '@app/common'; // Your custom filter
 
 async function bootstrap() {
   const logger = new Logger('Event Service');
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  // Create a microservice only
+  const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.TCP,
     options: {
       host: '0.0.0.0',
@@ -15,45 +15,10 @@ async function bootstrap() {
     },
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
-
-  app.useGlobalFilters(new HttpExceptionFilter());
-
   await app.listen();
-  logger.log('🎯 Event microservice is running on port 3002');
+  logger.log('Event microservice is running on port 3002');
 }
 bootstrap();
-
-// import { NestFactory } from '@nestjs/core';
-// import { Transport } from '@nestjs/microservices';
-// import { Logger } from '@nestjs/common';
-// import { AppModule } from './app.module';
-
-// async function bootstrap() {
-//   const logger = new Logger('Event Service');
-
-//   // Create a microservice only
-//   const app = await NestFactory.createMicroservice(AppModule, {
-//     transport: Transport.TCP,
-//     options: {
-//       host: '0.0.0.0',
-//       port: 3002,
-//     },
-//   });
-
-//   await app.listen();
-//   logger.log('Event microservice is running on port 3002');
-// }
-// bootstrap();
 
 // import { NestFactory } from '@nestjs/core';
 // import { Transport, MicroserviceOptions } from '@nestjs/microservices';
@@ -62,9 +27,7 @@ bootstrap();
 // import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import { AppModule } from './app.module';
 // import helmet from 'helmet';
-// // import compression from 'compression';
 // import * as compression from 'compression';
-
 // import { HttpExceptionFilter } from '@app/common';
 
 // /**
@@ -133,25 +96,3 @@ bootstrap();
 //   logger.error(`Failed to start event service: ${err.message}`, err.stack);
 //   process.exit(1);
 // });
-
-// import { NestFactory } from '@nestjs/core';
-// import { Transport } from '@nestjs/microservices';
-// import { Logger } from '@nestjs/common';
-// import { AppModule } from './app.module';
-
-// async function bootstrap() {
-//   const logger = new Logger('Event Service');
-
-//   // Create a microservice only
-//   const app = await NestFactory.createMicroservice(AppModule, {
-//     transport: Transport.TCP,
-//     options: {
-//       host: '0.0.0.0',
-//       port: 3002,
-//     },
-//   });
-
-//   await app.listen();
-//   logger.log('Event microservice is running on port 3002');
-// }
-// bootstrap();

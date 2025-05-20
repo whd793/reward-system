@@ -2,26 +2,31 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY tsconfig*.json ./
-COPY nest-cli.json ./
+# Copy the entire project
+COPY . .
 
-COPY apps/event ./apps/event
-COPY libs ./libs
+# Install all dependencies
+RUN npm install --legacy-peer-deps
 
-RUN npm ci
-RUN npm run build event
+# Build the event application
+RUN npx nest build event
 
 FROM node:18-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --production --legacy-peer-deps
+
+# Copy the entire dist directory
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
 
 USER node
 
 EXPOSE 3002
 
-CMD ["node", "dist/apps/event/main"]
+# Use the correct path to the main.js file
+CMD ["node", "dist/apps/event/apps/event/src/main.js"]

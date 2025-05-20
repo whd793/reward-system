@@ -1,17 +1,73 @@
-// This script will be run when MongoDB container is created
-// It creates the required users and basic data
+// // This script will be run when MongoDB container is created
+// // It creates the required users and basic data
 
+// db = db.getSiblingDB('reward-system');
+
+// // Create users collection
+// db.createCollection('users');
+
+// // Create default users
+// db.users.insertMany([
+//   {
+//     username: 'admin',
+//     email: 'admin@example.com',
+//     password: '$2b$10$8jPiAUizVbip.l3PkPSIB.lVsOQcQyJiHFrgQ9H5hsVQdN9YQwSMu', // admin123
+//     roles: ['ADMIN'],
+//     createdAt: new Date(),
+//     updatedAt: new Date(),
+//   },
+//   {
+//     username: 'operator',
+//     email: 'operator@example.com',
+//     password: '$2b$10$3BnkAwUJUC9H5.UYk1qQ1OGI35xYQZdbH.TmUvlRCQGIsJHsU33Ce', // operator123
+//     roles: ['OPERATOR'],
+//     createdAt: new Date(),
+//     updatedAt: new Date(),
+//   },
+//   {
+//     username: 'auditor',
+//     email: 'auditor@example.com',
+//     password: '$2b$10$lC3wQvVVFj9DwsYrSfvdDeZpkFfGwdHAIUfcnHMdEcXaGRVTRJ5De', // auditor123
+//     roles: ['AUDITOR'],
+//     createdAt: new Date(),
+//     updatedAt: new Date(),
+//   },
+//   {
+//     username: 'user',
+//     email: 'user@example.com',
+//     password: '$2b$10$Pz/DBJK91i4IdZLGkGeQJ.d03cNWCG2GnPMYR9oIFhn6RCEcI9R6a', // user123
+//     roles: ['USER'],
+//     createdAt: new Date(),
+//     updatedAt: new Date(),
+//   },
+// ]);
+
+// Modified init-mongo.js with bcrypt hashing
 db = db.getSiblingDB('reward-system');
 
 // Create users collection
 db.createCollection('users');
 
-// Create default users
+// Helper function to hash passwords (basic implementation for MongoDB shell)
+function hashPassword(password) {
+  // Note: This is not actual bcrypt hashing, just a placeholder
+  // MongoDB shell doesn't support bcrypt, so we're using hardcoded hashes
+  if (password === 'admin123')
+    return '$2b$10$8jPiAUizVbip.l3PkPSIB.lVsOQcQyJiHFrgQ9H5hsVQdN9YQwSMu';
+  if (password === 'operator123')
+    return '$2b$10$3BnkAwUJUC9H5.UYk1qQ1OGI35xYQZdbH.TmUvlRCQGIsJHsU33Ce';
+  if (password === 'auditor123')
+    return '$2b$10$lC3wQvVVFj9DwsYrSfvdDeZpkFfGwdHAIUfcnHMdEcXaGRVTRJ5De';
+  if (password === 'user123') return '$2b$10$Pz/DBJK91i4IdZLGkGeQJ.d03cNWCG2GnPMYR9oIFhn6RCEcI9R6a';
+  return password; // Fallback
+}
+
+// Create default users with the same hashed passwords as seed-db.js
 db.users.insertMany([
   {
     username: 'admin',
     email: 'admin@example.com',
-    password: '$2b$10$8jPiAUizVbip.l3PkPSIB.lVsOQcQyJiHFrgQ9H5hsVQdN9YQwSMu', // admin123
+    password: hashPassword('admin123'),
     roles: ['ADMIN'],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -19,7 +75,7 @@ db.users.insertMany([
   {
     username: 'operator',
     email: 'operator@example.com',
-    password: '$2b$10$3BnkAwUJUC9H5.UYk1qQ1OGI35xYQZdbH.TmUvlRCQGIsJHsU33Ce', // operator123
+    password: hashPassword('operator123'),
     roles: ['OPERATOR'],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -27,7 +83,7 @@ db.users.insertMany([
   {
     username: 'auditor',
     email: 'auditor@example.com',
-    password: '$2b$10$lC3wQvVVFj9DwsYrSfvdDeZpkFfGwdHAIUfcnHMdEcXaGRVTRJ5De', // auditor123
+    password: hashPassword('auditor123'),
     roles: ['AUDITOR'],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -35,7 +91,7 @@ db.users.insertMany([
   {
     username: 'user',
     email: 'user@example.com',
-    password: '$2b$10$Pz/DBJK91i4IdZLGkGeQJ.d03cNWCG2GnPMYR9oIFhn6RCEcI9R6a', // user123
+    password: hashPassword('user123'),
     roles: ['USER'],
     createdAt: new Date(),
     updatedAt: new Date(),

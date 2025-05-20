@@ -2,26 +2,31 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY tsconfig*.json ./
-COPY nest-cli.json ./
+# Copy the entire project
+COPY . .
 
-COPY apps/gateway ./apps/gateway
-COPY libs ./libs
+# Install all dependencies
+RUN npm install --legacy-peer-deps
 
-RUN npm ci
-RUN npm run build gateway
+# Build the gateway application
+RUN npx nest build gateway
 
 FROM node:18-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/package*.json ./
+# Copy package files
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --production --legacy-peer-deps
+
+# Copy the entire dist directory
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
 
 USER node
 
 EXPOSE 3000
 
-CMD ["node", "dist/apps/gateway/main"]
+# Use the correct path to the main.js file
+CMD ["node", "dist/apps/gateway/apps/gateway/src/main.js"]
